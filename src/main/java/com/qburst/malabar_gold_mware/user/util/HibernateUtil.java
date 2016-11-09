@@ -1,4 +1,4 @@
-package com.qburst.malabar_gold_mware.user.util;
+package com.qburst.malabar_gold_mware.util;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;

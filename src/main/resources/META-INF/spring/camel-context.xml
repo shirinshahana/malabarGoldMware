@@ -3,7 +3,7 @@
   <camelContext xmlns="http://camel.apache.org/schema/spring">
     <package>com.qburst.malabar_gold_mware</package>
    	<route id="getProductCatalog">
-  		<from uri="jetty:http://0.0.0.0:3002/product_catalog?matchOnUriPrefix=true&amp;httpMethodRestrict=POST"/>
+  		<from uri="jetty:http://0.0.0.0:3002/produt_catalog?matchOnUriPrefix=true&amp;httpMethodRestrict=POST"/>
   		<!--<to uri="jetty:http://10.7.30.188:8082/server?bridgeEndpoint=true&amp;throwExceptionOnFailure=false" /> -->
   		<process ref ="App"/>
 	</route>
@@ -40,7 +40,6 @@
   		<!-- to uri="jetty:http://10.7.30.19:8082/server?bridgeEndpoint=true&amp;throwExceptionOnFailure=false" /-->
   		<bean ref ="store" method="storeLocator"/>
 	</route>	
-
     
 </camelContext>
 
@@ -48,6 +47,5 @@
 <bean class="com.qburst.malabar_gold_mware.user.user" id="userReg"/>
 <bean class="com.qburst.malabar_gold_mware.product.Product" id="product"/>
 <bean class="com.qburst.malabar_gold_mware.store.Store" id="store"/>
-
 
 </beans>
