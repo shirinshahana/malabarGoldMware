@@ -24,93 +24,96 @@ import com.google.gson.Gson;
 import com.qburst.malabar_gold_mware.mapping.User;
 import com.qburst.malabar_gold_mware.util.HibernateUtil;
 
-public class user{
-	public void userRegistration(Exchange exchange) throws ParserConfigurationException, ParseException{
-		String body=exchange.getIn().getBody(String.class);
+public class user {
+	public void userRegistration(Exchange exchange) throws ParserConfigurationException, ParseException {
+		String body = exchange.getIn().getBody(String.class);
 		JSONParser parser = new JSONParser();
-		 Statement stmt = null;
-	     JSONObject reslt = new JSONObject() ;
-	     JSONArray result = new JSONArray();
-	     java.sql.Connection c = null;
-//      userData= (JSONArray) parser.parse(body);
-		System.out.println(body);
+		Statement stmt = null;
+		JSONObject reslt = new JSONObject();
+		JSONArray result = new JSONArray();
+		java.sql.Connection c = null;
 		JSONObject res;
 		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
 		res = (JSONObject) parser.parse(body);
-		System.out.println("got as"+res);
-		String username=res.get("username").toString();
-		String password=res.get("password").toString();
-		String email=res.get("email").toString();
-		Long phoneNumber=(Long) res.get("phoneNumber");
-        
-		User u=new User();
+		String username = res.get("username").toString();
+		String password = res.get("password").toString();
+		String email = res.get("email").toString();
+		Long phoneNumber = (Long) res.get("phoneNumber");
+
+		User u = new User();
 		u.setUsername(username);
 		u.setPassword(password);
 		u.setEmail(email);
 		u.setPhoneNumber(phoneNumber);
 		long userId = (Long) session.save(u);
-        session.getTransaction().commit();
-       
-        User users = (User) session.get(User.class, userId);       
-        System.out.println("set info"+users);
-        reslt.put("message","Registration succesfull");
-        reslt.put("status","200");
-        result.add(reslt); 
-        exchange.getOut().setBody(result);	
-               
-        session.close();
-		
-		
-	}
-	public void getUserInfo(Exchange exchange) throws ParseException{
-		SessionFactory sessionFactory = HibernateUtil.getSessionFactory(); 
-		Session session = sessionFactory.openSession();
-        String body=exchange.getIn().getBody(String.class);
-		JSONParser parser = new JSONParser();
-		JSONObject res = (JSONObject) parser.parse(body);
-	     JSONArray result = new JSONArray();
-	     JSONObject reslt = new JSONObject() ;
-		Long userID=(Long)res.get("user_id");
-		
-        User user=new User();
-        user = (User) session.get(User.class, userID);
-        SecureRandom random = new SecureRandom();
-        byte bytes[] = new byte[20];
-        random.nextBytes(bytes);
-        String token = bytes.toString();
-        reslt.put("user",user);
-        reslt.put("token",token);
-        result.add(reslt); 
+		session.getTransaction().commit();
 
-        exchange.getOut().setBody(result);		
+		User users = (User) session.get(User.class, userId);
+		reslt.put("message", "Registration succesfull");
+		reslt.put("status", "200");
+		result.add(reslt);
+		exchange.getOut().setBody(result);
+
+		session.close();
+
 	}
-	public void loginUser(Exchange exchange) throws ParseException{
-		SessionFactory sessionFactory = HibernateUtil.getSessionFactory(); 
+
+	public void getUserInfo(Exchange exchange) throws ParseException {
+		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 		Session session = sessionFactory.openSession();
-        String body=exchange.getIn().getBody(String.class);
+		String body = exchange.getIn().getBody(String.class);
+		Long userID = null;
+		JSONParser parser = new JSONParser();
+		JSONArray result = new JSONArray();
+		JSONObject reslt = new JSONObject();
+		JSONObject res;
+		if (body.length() == 0) {
+			String hql = "FROM User";
+			Query query = session.createQuery(hql);
+			List results = query.list();
+			reslt.put("data", results);
+		} else {
+			res = (JSONObject) parser.parse(body);
+			userID = (Long) res.get("user_id");
+
+			User user = new User();
+			user = (User) session.get(User.class, userID);
+			SecureRandom random = new SecureRandom();
+			byte bytes[] = new byte[20];
+			random.nextBytes(bytes);
+			String token = bytes.toString();
+			reslt.put("user", user);
+			reslt.put("token", token);
+		}
+		result.add(reslt);
+
+		exchange.getOut().setBody(result);
+	}
+
+	public void loginUser(Exchange exchange) throws ParseException {
+		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+		Session session = sessionFactory.openSession();
+		String body = exchange.getIn().getBody(String.class);
 		JSONParser parser = new JSONParser();
 		JSONObject res = (JSONObject) parser.parse(body);
-	     JSONArray result = new JSONArray();
-	     JSONObject reslt = new JSONObject() ;
-	     
-	     String username=(String)res.get("username").toString();
-	     String password=(String)res.get("password").toString();
-	     //User user = (User) session.get(User.class).setParameter("username",username).setParameter("password",password);
-	     String hql="FROM User u WHERE u.username = '"+username+"' and u.password='"+password+"'";
-	     Query query=session.createQuery(hql);
-	     System.out.println("query :"+query);
-	     List resultd=(List) query.list();
-	     SecureRandom random = new SecureRandom();
-	     byte bytes[] = new byte[20];
-	     String token = bytes.toString();
-	     String json = new Gson().toJson(resultd);
-	     reslt.put("status","success");
-	        reslt.put("token",token);
-	        reslt.put("data",json);
-	        result.add(reslt);
-	        System.out.println("json : "+json);
-	        exchange.getOut().setBody(result);	
+		JSONArray result = new JSONArray();
+		JSONObject reslt = new JSONObject();
+
+		String username = (String) res.get("username").toString();
+		String password = (String) res.get("password").toString();
+		String hql = "FROM User u WHERE u.username = '" + username + "' and u.password='" + password + "'";
+		Query query = session.createQuery(hql);
+		List resultd = (List) query.list();
+		SecureRandom random = new SecureRandom();
+		byte bytes[] = new byte[20];
+		String token = bytes.toString();
+		String json = new Gson().toJson(resultd);
+		reslt.put("status", "success");
+		reslt.put("token", token);
+		reslt.put("data", json);
+		result.add(reslt);
+		exchange.getOut().setBody(result);
 	}
 }
