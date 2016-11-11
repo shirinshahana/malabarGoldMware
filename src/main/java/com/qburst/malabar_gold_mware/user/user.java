@@ -21,6 +21,7 @@ import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.qburst.malabar_gold_mware.mapping.User;
 import com.qburst.malabar_gold_mware.util.HibernateUtil;
 
@@ -73,7 +74,9 @@ public class user {
 			String hql = "FROM User";
 			Query query = session.createQuery(hql);
 			List results = query.list();
-			reslt.put("data", results);
+			String users = new Gson().toJson(results);
+			Object json = parser.parse(users);
+			reslt.put("data", json);
 		} else {
 			res = (JSONObject) parser.parse(body);
 			userID = (Long) res.get("user_id");
