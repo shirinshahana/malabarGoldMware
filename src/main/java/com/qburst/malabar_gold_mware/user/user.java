@@ -93,6 +93,7 @@ public class user {
 		result.add(reslt);
 
 		exchange.getOut().setBody(result);
+		session.close();
 	}
 
 	public void loginUser(Exchange exchange) throws ParseException {
@@ -118,5 +119,6 @@ public class user {
 		reslt.put("data", json);
 		result.add(reslt);
 		exchange.getOut().setBody(result);
+		session.close();
 	}
 }
