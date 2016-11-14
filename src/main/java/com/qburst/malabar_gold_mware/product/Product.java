@@ -94,13 +94,13 @@ class ProductMethods{
 		
 		product bd = new product();
 		bd.setId(id);
-		bd.setName(name);
+		bd.setProductName(name);
 		bd.setSize(size);
 		bd.setWeight(weight);
 		bd.setStock_status(stock_status);
-		bd.setImg(img);
+		bd.setImageSource(img);
 		bd.setOrnament(ornament);
-		bd.setType(type);
+		bd.setProductType(type);
 		bd.setGender(gender);
 		bd.setBrand(brand);
 		bd.setGold_color(gold_color);

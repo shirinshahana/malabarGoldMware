@@ -12,11 +12,11 @@
         </id>
  
         <property name="ornament" type="string" column="ornament"/>
-                <property name="type" type="string" column="type"/>
+                <property name="productType" type="string" column="type"/>
         
-                <property name="name" type="string" column="name"/>
+                <property name="productName" type="string" column="name"/>
         
-                <property name="img" type="string" column="img"/>
+                <property name="imageSource" type="string" column="img"/>
         
                 <property name="size" type="string" column="size"/>
                 <property name="gold_color" type="string" column="gold_color"/>

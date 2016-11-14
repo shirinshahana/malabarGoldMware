@@ -51,7 +51,7 @@ public class user {
 		long userId = (Long) session.save(u);
 		session.getTransaction().commit();
 
-		User users = (User) session.get(User.class, userId);
+		Object users = session.get(User.class, userId);
 		reslt.put("message", "Registration succesfull");
 		reslt.put("status", "200");
 		result.add(reslt);
@@ -81,13 +81,16 @@ public class user {
 			res = (JSONObject) parser.parse(body);
 			userID = (Long) res.get("user_id");
 
-			User user = new User();
-			user = (User) session.get(User.class, userID);
+			Object user = new User();
+			user =  session.get(User.class, userID);
+			String json = new Gson().toJson(user);
+			Object jsn = parser.parse(json);
+
 			SecureRandom random = new SecureRandom();
 			byte bytes[] = new byte[20];
 			random.nextBytes(bytes);
 			String token = bytes.toString();
-			reslt.put("user", user);
+			reslt.put("user", jsn);
 			reslt.put("token", token);
 		}
 		result.add(reslt);
@@ -114,9 +117,11 @@ public class user {
 		byte bytes[] = new byte[20];
 		String token = bytes.toString();
 		String json = new Gson().toJson(resultd);
+		Object jsn = parser.parse(json);
+
 		reslt.put("status", "success");
 		reslt.put("token", token);
-		reslt.put("data", json);
+		reslt.put("data", jsn);
 		result.add(reslt);
 		exchange.getOut().setBody(result);
 		session.close();
